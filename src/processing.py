@@ -33,7 +33,7 @@ def key_for_sort(x: Dict) -> Tuple[int, int, int, int, int, int]:
 
 def sort_by_date(data: List[Dict], order: str = "desc") -> List[Dict]:
     """
-    Сортирует по времени
+    Сортирует по времени.
     """
     reverse = order.lower() == "desc"
     return sorted(data, key=key_for_sort, reverse=reverse)
