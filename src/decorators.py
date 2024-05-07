@@ -20,5 +20,5 @@ def log(file_name: str) -> Callable[[Callable], Callable]:
 
 
 @log(file_name="mylog.txt")
-def my_function(x: str, y: str) -> str:
+def my_function(x: int, y: int) -> int:
     return x + y
