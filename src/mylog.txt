@@ -1,0 +1,8 @@
+2018-10-31 20:31:00 my_function ok
+2018-10-31 20:31:00 my_function error: unsupported operand type(s) for +: 'int' and 'dict'. Inputs: (1, {}), {}
+2018-10-31 20:31:00 my_function error: can only concatenate list (not "int") to list. Inputs: ([], 2), {}
+2018-10-31 20:31:00 my_function ok
+2018-10-31 20:31:00 my_function ok
+2018-10-31 20:31:00 my_function ok
+2018-10-31 20:31:00 my_function ok
+2018-10-31 20:31:00 my_function ok
