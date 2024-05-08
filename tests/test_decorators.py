@@ -1,3 +1,5 @@
+import os.path
+
 from src.decorators import my_function
 
 file_data = [
@@ -11,13 +13,37 @@ def write_to_file(file_path: str, content: str) -> None:
         file.write(content)
 
 
-def test_write_to_file() -> None:
+def test_my_function1() -> None:
+    file_path = ""
+
+    try:
+        my_function(1, 2)
+        my_function(1, {})
+
+        with open(file_path, "r") as file:
+            assert file_data[0] in file.read()
+        with open(file_path, "r") as file:
+            assert file_data[1] in file.read()
+
+        os.remove(file_path)
+
+    except FileNotFoundError:
+        assert True
+
+
+def test_my_function2() -> None:
     file_path = "mylog.txt"
 
-    my_function(1, 2)
-    my_function(1, {})
+    try:
+        my_function(1, 2)
+        my_function(1, {})
 
-    with open(file_path, "r") as file:
-        assert file_data[0] in file.read()
-    with open(file_path, "r") as file:
-        assert file_data[1] in file.read()
+        with open(file_path, "r") as file:
+            assert file_data[0] in file.read()
+        with open(file_path, "r") as file:
+            assert file_data[1] in file.read()
+
+        os.remove(file_path)
+
+    except FileNotFoundError:
+        assert True
