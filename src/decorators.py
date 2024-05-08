@@ -5,22 +5,31 @@ def log(file_name: str) -> Callable[[Callable], Callable]:
     """
     Функция принимающая имя файла.
     """
+
     def decorator(func: Callable) -> Callable:
         """
         Функция принимающая функцию my_function.
         """
+
         def decorator_(*args: Tuple[Any], **kwargs: Dict[str, Any]) -> Any:
             """
-            Функция проверяющая результат работы функции my_function и записывающая его в mylog.txt.
+            Функция проверяющая результат работы функции my_function и записывающая его в указанный файл
+            Если файла нет, то вывод происходит в консоль.
             """
             try:
                 result = func(*args, **kwargs)
             except Exception as error:
-                with open(file_name, "a") as file:
-                    file.write(f"2018-10-31 20:31:00 {func.__name__} error: {error}. Inputs: {args}, {kwargs}\n")
+                try:
+                    with open(file_name, "a") as file:
+                        file.write(f"2018-10-31 20:31:00 {func.__name__} error: {error}. Inputs: {args}, {kwargs}\n")
+                except FileNotFoundError:
+                    print(f"2018-10-31 20:31:00 {func.__name__} error: {error}. Inputs: {args}, {kwargs}\n")
             else:
-                with open(file_name, "a") as file:
-                    file.write(f"2018-10-31 20:31:00 {func.__name__} ok\n")
+                try:
+                    with open(file_name, "a") as file:
+                        file.write(f"2018-10-31 20:31:00 {func.__name__} ok\n")
+                except FileNotFoundError:
+                    print(f"2018-10-31 20:31:00 {func.__name__} ok")
                 return result
 
         return decorator_
@@ -28,7 +37,7 @@ def log(file_name: str) -> Callable[[Callable], Callable]:
     return decorator
 
 
-@log(file_name="mylog.txt")
+@log(file_name="")
 def my_function(x: int, y: int) -> int:
     """
     Функция сложения двух чисел.
