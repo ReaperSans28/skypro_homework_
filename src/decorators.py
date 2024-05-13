@@ -1,9 +1,9 @@
-from typing import Any, Callable, Dict, Tuple
+from typing import Any, Callable, Dict, Tuple, Optional
 
 
-def log(file_name: str) -> Callable[[Callable], Callable]:
+def log(file_name: Optional[str] = None) -> Callable[[Callable], Callable]:
     """
-    Функция принимающая имя файла.
+    Функция принимающая имя файла, если имени нет, то все выведется в консоль.
     """
 
     def decorator(func: Callable) -> Callable:

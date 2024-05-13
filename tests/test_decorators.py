@@ -1,5 +1,6 @@
 import os.path
 
+from typing import Optional
 from src.decorators import my_function
 
 file_data = [
@@ -8,14 +9,12 @@ file_data = [
 ]
 
 
-def write_to_file(file_path: str, content: str) -> None:
+def write_to_file(content: str, file_path: Optional[str] = None) -> None:
     with open(file_path, "w") as file:
         file.write(content)
 
 
-def test_my_function1() -> None:
-    file_path = ""
-
+def test_my_function1(file_path: Optional[str] = "") -> None:
     try:
         my_function(1, 2)
         my_function(1, {})
@@ -31,9 +30,7 @@ def test_my_function1() -> None:
         assert True
 
 
-def test_my_function2() -> None:
-    file_path = "mylog.txt"
-
+def test_my_function2(file_path: Optional[str] = "mylog.txt") -> None:
     try:
         my_function(1, 2)
         my_function(1, {})
