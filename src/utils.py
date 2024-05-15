@@ -30,9 +30,8 @@ def get_usd_value() -> Optional[float]:
     response = requests.get(url)
     data = response.json()
     if response.status_code == 200:
-        usd_rate_str = data["Valute"]["USD"]["Value"]
-        usd_rate = float(usd_rate_str.replace(",", "."))  # Преобразование строки в float
-        return usd_rate
+        usd_rate = data["Valute"]["USD"]["Value"]
+        return float(usd_rate)
     else:
         return None
 
@@ -43,9 +42,8 @@ def get_euro_value() -> Optional[float]:
     response = requests.get(url)
     data = response.json()
     if response.status_code == 200:
-        usd_rate_str = data["Valute"]["EUR"]["Value"]
-        usd_rate = float(usd_rate_str.replace(",", "."))
-        return usd_rate
+        euro_rate = data["Valute"]["EUR"]["Value"]
+        return float(euro_rate)
     else:
         return None
 
