@@ -1,13 +1,13 @@
 import json
+import os
 from typing import Dict, List, Optional
 
 import requests
-
-import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
-my_api_key = os.getenv('API_KEY')
+api = os.getenv("API_KEY")
 
 
 def get_financial_transactions(request: str) -> List[Dict]:
@@ -30,71 +30,59 @@ def get_financial_transactions(request: str) -> List[Dict]:
         return []
 
 
-def get_usd_value() -> Optional[float]:
-    """Функция выдает актуальный курс доллара, если он доступен."""
-    url = "https://www.cbr-xml-daily.ru/daily_json.js"
-    response = requests.get(url)
+def get_usd_value(api_key: str) -> Optional[float]:
+    url = "https://open.er-api.com/v6/latest/USD"
+    headers = {"apikey": api_key}
+    response = requests.get(url, headers=headers)
     data = response.json()
-    if response.status_code == 200:
-        usd_rate = data["Valute"]["USD"]["Value"]
-        return float(usd_rate)
-    else:
-        return None
+    if response.status_code == 200 and "conversion_rates" in data:
+        if "RUB" in data["conversion_rates"]:
+            usd_rate = data["conversion_rates"]["RUB"]
+            return float(usd_rate)
+    return None
 
 
-def get_euro_value() -> Optional[float]:
-    """Функция выдает актуальный курс евро, если он доступен."""
-    url = "https://www.cbr-xml-daily.ru/daily_json.js"
-    response = requests.get(url)
+def get_euro_value(api_key: str) -> Optional[float]:
+    url = "https://open.er-api.com/v6/latest/EUR"
+    headers = {"apikey": api_key}
+    response = requests.get(url, headers=headers)
     data = response.json()
-    if response.status_code == 200:
-        euro_rate = data["Valute"]["EUR"]["Value"]
-        return float(euro_rate)
-    else:
-        return None
+    if response.status_code == 200 and "conversion_rates" in data:
+        if "RUB" in data["conversion_rates"]:
+            euro_rate = data["conversion_rates"]["RUB"]
+            return float(euro_rate)
+    return None
 
 
-def get_amount_transactions(request: str) -> float:
-    """
-    Принимает на вход транзакцию и возвращает сумму транзакции (amount) в рублях, возвращает тип float.
-    Если транзакция была в USD или EUR, идет обращение к функциям, которые дадут актуальный курс валюты и
-    происходит конвертация сумм.
-    """
+def get_amount_transactions(request: str, api_key: str) -> float:
     try:
         with open(request, encoding="utf-8") as f:
             data = json.load(f)
         if not isinstance(data, list):
             return 0.0
 
-        amount = []
+        amount_rub = 0.0
         for item in data:
             if "operationAmount" in item:
-                amount.append(item["operationAmount"])
+                value = item["operationAmount"]
+                currency = value.get("currency", {}).get("code", "")
+                if currency == "USD":
+                    usd_value = get_usd_value(api_key)
+                    if usd_value is not None:
+                        amount_rub += float(value["amount"]) * usd_value
+                elif currency == "EUR":
+                    euro_value = get_euro_value(api_key)
+                    if euro_value is not None:
+                        amount_rub += float(value["amount"]) * euro_value
+                else:
+                    amount_rub += float(value["amount"])
 
-        amount_rub = []
-        for value in amount:
-            if value["currency"] == {"name": "USD", "code": "USD"}:
-                usd_value = get_usd_value()
-                if usd_value is not None:
-                    amount_rub.append(float(value["amount"]) * usd_value)
-            elif value["currency"] == {"name": "EUR", "code": "EUR"}:
-                euro_value = get_euro_value()
-                if euro_value is not None:
-                    amount_rub.append(float(value["amount"]) * euro_value)
-            else:
-                amount_rub.append(float(value["amount"]))
-
-        return float(amount_rub)
+        return amount_rub
 
     except (FileNotFoundError, json.decoder.JSONDecodeError):
         return 0.0
 
 
-# ❌⠀Функция конвертации валюты из USD и EUR в рубли не принимает на вход словарь с данными о транзакции⠀
-# ❌⠀Функция конвертации валюты из USD и EUR в рубли не возвращает сумму транзакции (ключ amount) в рублях⠀
-# ❌⠀Сумма транзакции в рублях, которую возвращает функция не имеет тип данных float⠀
-# ❌⠀Если транзакция была в USD или EUR, не происходит обращение к внешнему API для получения текущего курса валют и
-# конвертации суммы операции в рубли⠀
-
-
-
+path = "C:\\Users\\student\\PycharmProjects\\skypro_homework1828\\data\\data.json"
+converted_amount = get_amount_transactions(path, api)
+print(f"Converted amount in rubles: {converted_amount}")
