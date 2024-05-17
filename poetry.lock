@@ -182,6 +182,16 @@ files = [
 ]
 
 [[package]]
+name = "dotenv"
+version = "0.0.5"
+description = "Handle .env files"
+optional = false
+python-versions = "*"
+files = [
+    {file = "dotenv-0.0.5.tar.gz", hash = "sha256:b58d2ab3f83dbd4f8a362b21158a606bee87317a9444485566b3c8f0af847091"},
+]
+
+[[package]]
 name = "exceptiongroup"
 version = "1.2.1"
 description = "Backport of PEP 654 (exception groups)"
@@ -476,4 +486,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "028cc5eaf1a1b29978666bfdede3048e14d269a6b956314cbf759a628730deae"
+content-hash = "859e7056a83eb0d89edc455dec08cd718d45d34929f104f04423a1dfdc5a8bc0"

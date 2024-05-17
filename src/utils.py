@@ -3,6 +3,12 @@ from typing import Dict, List, Optional
 
 import requests
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+my_api_key = os.getenv('API_KEY')
+
 
 def get_financial_transactions(request: str) -> List[Dict]:
     """
@@ -48,7 +54,7 @@ def get_euro_value() -> Optional[float]:
         return None
 
 
-def get_amount_transactions(request: str) -> List[float]:
+def get_amount_transactions(request: str) -> float:
     """
     Принимает на вход транзакцию и возвращает сумму транзакции (amount) в рублях, возвращает тип float.
     Если транзакция была в USD или EUR, идет обращение к функциям, которые дадут актуальный курс валюты и
@@ -58,7 +64,7 @@ def get_amount_transactions(request: str) -> List[float]:
         with open(request, encoding="utf-8") as f:
             data = json.load(f)
         if not isinstance(data, list):
-            return [0.0]
+            return 0.0
 
         amount = []
         for item in data:
@@ -78,7 +84,17 @@ def get_amount_transactions(request: str) -> List[float]:
             else:
                 amount_rub.append(float(value["amount"]))
 
-        return amount_rub
+        return float(amount_rub)
 
     except (FileNotFoundError, json.decoder.JSONDecodeError):
-        return [0.0]
+        return 0.0
+
+
+# ❌⠀Функция конвертации валюты из USD и EUR в рубли не принимает на вход словарь с данными о транзакции⠀
+# ❌⠀Функция конвертации валюты из USD и EUR в рубли не возвращает сумму транзакции (ключ amount) в рублях⠀
+# ❌⠀Сумма транзакции в рублях, которую возвращает функция не имеет тип данных float⠀
+# ❌⠀Если транзакция была в USD или EUR, не происходит обращение к внешнему API для получения текущего курса валют и
+# конвертации суммы операции в рубли⠀
+
+
+
