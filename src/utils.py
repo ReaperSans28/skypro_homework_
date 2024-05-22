@@ -5,9 +5,12 @@ from typing import Dict, List, Optional
 import requests
 from dotenv import load_dotenv
 
+from src.logging import logging_setup
+
 load_dotenv()
 
 api = os.getenv("API_KEY")
+logger = logging_setup()
 
 
 def get_financial_transactions(request: str) -> List[Dict]:
@@ -25,8 +28,10 @@ def get_financial_transactions(request: str) -> List[Dict]:
             if "operationAmount" in item and isinstance(item["operationAmount"], dict):
                 if "amount" in item["operationAmount"]:
                     transactions.append(item)
+        logger.info("Сработала get_financial_transactions")
         return transactions
     except (FileNotFoundError, json.decoder.JSONDecodeError):
+        logger.error("get_financial_transactions выдала ошибку")
         return []
 
 
@@ -40,7 +45,9 @@ def get_usd_value() -> Optional[float]:
     if response.status_code == 200 and "conversion_rates" in data:
         if "USD" in data["conversion_rates"]:
             usd_rate = data["conversion_rates"]["USD"]
+            logger.info("Сработала get_usd_value")
             return float(usd_rate)
+    logger.error("get_usd_value не сработала")
     return None
 
 
@@ -54,7 +61,9 @@ def get_euro_value() -> Optional[float]:
     if response.status_code == 200 and "conversion_rates" in data:
         if "EUR" in data["conversion_rates"]:
             euro_rate = data["conversion_rates"]["EUR"]
+            logger.info("Сработала get_euro_value")
             return float(euro_rate)
+    logger.error("get_euro_value не сработала")
     return None
 
 
@@ -80,4 +89,9 @@ def get_amount_transactions(data: list) -> float:
                     amount_rub += float(value["amount"]) * euro_value
             else:
                 amount_rub += float(value["amount"])
-    return amount_rub
+    if amount_rub > 0:
+        logger.info("Сработала get_amount_transactions")
+        return amount_rub
+    else:
+        logger.error("get_amount_transactions выдала ошибку")
+        return 0.0
