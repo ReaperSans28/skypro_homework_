@@ -7,9 +7,10 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-requests = "^2.31.0"
 dotenv = "^0.0.5"
 python-dotenv = "^1.0.1"
+pandas = "^2.2.2"
+requests = "^2.32.3"
 
 
 [tool.poetry.group.lint.dependencies]
