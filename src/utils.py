@@ -67,28 +67,29 @@ def get_euro_value() -> Optional[float]:
     return None
 
 
-def get_amount_transactions(data: list) -> float:
+def get_amount_transactions(transaction: dict) -> float:
     """
-    Функция принимает на вход список словарей с данными о финансовых транзакциях и возвращает сумму всех транзакций
+    Функция принимает на вход словарь с данными о финансовой транзакции и возвращает сумму транзакции
     в рублях.
     Иначе 0.0
     """
     global api
     amount_rub = 0.0
-    for item in data:
-        if "operationAmount" in item:
-            value = item["operationAmount"]
-            currency = value.get("currency", {}).get("code", "")
-            if currency == "USD":
-                usd_value = get_usd_value()
-                if usd_value is not None:
-                    amount_rub += float(value["amount"]) * usd_value
-            elif currency == "EUR":
-                euro_value = get_euro_value()
-                if euro_value is not None:
-                    amount_rub += float(value["amount"]) * euro_value
-            else:
-                amount_rub += float(value["amount"])
+
+    if "operationAmount" in transaction:
+        value = transaction["operationAmount"]
+        currency = value.get("currency", {}).get("code", "")
+        if currency == "USD":
+            usd_value = get_usd_value()
+            if usd_value is not None:
+                amount_rub += float(value["amount"]) * usd_value
+        elif currency == "EUR":
+            euro_value = get_euro_value()
+            if euro_value is not None:
+                amount_rub += float(value["amount"]) * euro_value
+        else:
+            amount_rub += float(value["amount"])
+
     if amount_rub > 0:
         logger.info("Сработала get_amount_transactions")
         return amount_rub
