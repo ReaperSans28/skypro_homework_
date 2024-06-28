@@ -42,9 +42,9 @@ def get_usd_value() -> Optional[float]:
     headers = {"apikey": api}
     response = requests.get(url, headers=headers)
     data = response.json()
-    if response.status_code == 200 and "conversion_rates" in data:
-        if "USD" in data["conversion_rates"]:
-            usd_rate = data["conversion_rates"]["USD"]
+    if response.status_code == 200 and "rates" in data:
+        if "USD" in data["rates"]:
+            usd_rate = data["rates"]["USD"]
             logger.info("Сработала get_usd_value")
             return float(usd_rate)
     logger.error("get_usd_value не сработала")
@@ -58,9 +58,9 @@ def get_euro_value() -> Optional[float]:
     headers = {"apikey": api}
     response = requests.get(url, headers=headers)
     data = response.json()
-    if response.status_code == 200 and "conversion_rates" in data:
-        if "EUR" in data["conversion_rates"]:
-            euro_rate = data["conversion_rates"]["EUR"]
+    if response.status_code == 200 and "rates" in data:
+        if "EUR" in data["rates"]:
+            euro_rate = data["rates"]["EUR"]
             logger.info("Сработала get_euro_value")
             return float(euro_rate)
     logger.error("get_euro_value не сработала")
